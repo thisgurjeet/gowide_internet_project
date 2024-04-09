@@ -1,0 +1,798 @@
+import 'package:flutter/material.dart';
+import 'package:gowiide_broadband_app/app_colors.dart';
+import 'package:gowiide_broadband_app/services/resources_respository.dart';
+import 'package:gowiide_broadband_app/widgets/complaint_card.dart';
+
+class HomeScreen extends StatefulWidget {
+  final String userId;
+  const HomeScreen({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Map<String, dynamic>>> _userComplaintsFuture;
+  @override
+  void initState() {
+    super.initState();
+    _userComplaintsFuture = ApiRepository().getUserComplaintList(widget.userId);
+  }
+
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    return Scaffold(
+      body: SafeArea(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Container(
+                padding: const EdgeInsets.only(left: 20),
+                height: height * 0.09,
+                child: Row(
+                  children: [
+                    // icon
+                    ClipOval(
+                      child: SizedBox(
+                        height: height * 0.05, // Adjust the height as needed
+                        width: height *
+                            0.05, // Ensure the width matches the height for a circular shape
+                        child: const Image(
+                          image: AssetImage('assets/images/pfp1.png'),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Container(
+                        padding: const EdgeInsets.only(top: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Hello ${widget.userId}',
+                              style: const TextStyle(
+                                  fontSize: 20.5,
+                                  color: AppColors.backgroundColor,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Text('Welcome back!')
+                          ],
+                        ))
+                  ],
+                ),
+              )),
+          // days
+          SizedBox(
+            height: height * 0.15,
+          ),
+          const Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              'Complaint History',
+              style: TextStyle(fontSize: 18, color: Colors.black54),
+            ),
+          ),
+          SizedBox(
+            height: height * 0.0050,
+          ),
+          // list of comlaints
+          Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+            future: _userComplaintsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final userComplaints = snapshot.data ?? [];
+                return ListView.builder(
+                  itemCount: userComplaints.length,
+                  itemBuilder: (context, index) {
+                    final complaintData = userComplaints[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: ComplaintCard(
+                        height: height * 0.14,
+                        complaintNo: complaintData['complaintNo'],
+                        complaintSubject: complaintData['complaintSubject'],
+                        complaintOpenTime: complaintData['complaintOpenTime'],
+                        engineerName: complaintData['engineerName'] ?? '',
+                        complaintStatus: complaintData['complaintStatus'],
+                      ),
+                    );
+                  },
+                );
+              }
+            },
+          ))
+        ]),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+//
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:gowiide_broadband_app/app_colors.dart';
+import 'package:gowiide_broadband_app/services/resources_respository.dart';
+import 'package:intl/intl.dart';
+
+class HomeScreen extends StatefulWidget {
+  final String userId;
+
+  const HomeScreen({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Map<String, dynamic>>> _paymentHistory;
+
+  @override
+  void initState() {
+    super.initState();
+    _paymentHistory = ApiRepository().getPaymentHistory(widget.userId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      backgroundColor: const Color(0xFFECF1EF),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2,
+        title: const Text(
+          'WideBroadband',
+          style: TextStyle(
+            fontSize: 20,
+            color: AppColors.backgroundColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _paymentHistory,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final paymentHistory = snapshot.data!;
+            if (paymentHistory.isEmpty) {
+              return const Center(child: Text('No payment history found'));
+            } else {
+              final latestPayment = paymentHistory.first;
+              final packageName =
+                  latestPayment['packagename'] ?? 'Package Name';
+              final expiryDate = latestPayment['expiry_date'] ?? '';
+              final amount = latestPayment['amount'] != null
+                  ? '${latestPayment['amount']}'
+                  : '0';
+              final renewDate = latestPayment['renewDate'] ?? '';
+
+              final expiryDateTime = expiryDate.isNotEmpty
+                  ? DateFormat('yyyy-MM-dd').parse(expiryDate)
+                  : DateTime.now();
+              final renewDateTime = renewDate.isNotEmpty
+                  ? DateFormat('yyyy-MM-dd').parse(renewDate)
+                  : DateTime.now();
+
+              // Calculate remaining days
+              int remainingDays =
+                  expiryDateTime.difference(DateTime.now()).inDays;
+              remainingDays = max(
+                  remainingDays, 0); // Ensure remaining days is not negative
+
+              final totalDays = max(
+                  renewDateTime.difference(expiryDateTime).inDays,
+                  1); // Ensure total days is not zero
+              final remainingPercentage =
+                  remainingDays.toDouble() / totalDays.toDouble();
+
+              return Container(
+                height: height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Circle for remaining days
+                    SizedBox(
+                      height: 200,
+                      width: 200,
+                      child: Stack(
+                        children: [
+                          // Outer white circle with shadow
+                          Container(
+                            height: 200,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color.fromARGB(255, 146, 146, 146)
+                                      .withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 1),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Purple countdown line
+                          CustomPaint(
+                            size: const Size(200, 200),
+                            painter: CirclePainter(remainingPercentage),
+                          ),
+                          // Text for remaining days
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '$remainingDays',
+                                  style: const TextStyle(
+                                    fontSize: 45,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.blackColor,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                const Text(
+                                  'Days',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.black54,
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: height * 0.025),
+                    Text(
+                      'Expiry date: $expiryDate',
+                      style: TextStyle(color: Colors.black54, fontSize: 15),
+                    ),
+                    SizedBox(height: height * 0.025),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Container(
+                        height: height * 0.085,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 146, 146, 146)
+                                  .withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 1.5),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.only(left: 15, right: 20),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.arrow_left_sharp,
+                              color: AppColors.backgroundColor,
+                              size: 32.5,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '$packageName',
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 28, 28, 28),
+                                fontSize: 17,
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                            Container(
+                              height: height * 0.05,
+                              width: width * 0.13,
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  amount,
+                                  style: const TextStyle(
+                                    fontSize: 15.5,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CirclePainter extends CustomPainter {
+  final double remainingPercentage;
+
+  CirclePainter(this.remainingPercentage);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = Colors.purple
+      ..strokeWidth = 10.0
+      ..style = PaintingStyle.stroke;
+
+    final double radius = size.width / 2;
+    final double centerX = size.width / 2;
+    final double centerY = size.height / 2;
+
+    final double startAngle = -pi / 2;
+    final double sweepAngle = 2 * pi * remainingPercentage;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+
+
+// HOME SCREEN
+
+import 'dart:math';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gowiide_broadband_app/app_colors.dart';
+import 'package:gowiide_broadband_app/services/resources_respository.dart';
+import 'package:intl/intl.dart';
+
+class HomeScreen extends StatefulWidget {
+  final String userId;
+
+  const HomeScreen({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late Future<List<Map<String, dynamic>>> _paymentHistory;
+
+  @override
+  void initState() {
+    super.initState();
+    _paymentHistory = ApiRepository().getPaymentHistory(widget.userId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    return Scaffold(
+      backgroundColor: const Color(0xFFECF1EF),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: CircleAvatar(
+            radius: 25,
+            backgroundImage: AssetImage('assets/images/pfp1.png'),
+          ),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Hello ${widget.userId}',
+                style: GoogleFonts.notoSansKhojki(
+                  fontSize: 18,
+                  color: Color.fromARGB(255, 251, 121, 77),
+                  fontWeight: FontWeight.w600,
+                )),
+            Text('Welcome back!',
+                style: GoogleFonts.lato(
+                  fontSize: 14,
+                  color: Colors.black54,
+                  fontWeight: FontWeight.w500,
+                )),
+          ],
+        ),
+      ),
+      body: FutureBuilder<List<Map<String, dynamic>>>(
+        future: _paymentHistory,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final paymentHistory = snapshot.data!;
+            if (paymentHistory.isEmpty) {
+              return const Center(child: Text('No payment history found'));
+            } else {
+              final latestPayment = paymentHistory[0];
+              final packageName =
+                  latestPayment['packagename'] ?? 'Package Name';
+              final expiryDate = latestPayment['expiry_date'] ?? '';
+              final amount = latestPayment['amount'] != null
+                  ? '${latestPayment['amount']}'
+                  : '0';
+              final renewDate = latestPayment['renewDate'] ?? '';
+
+              final expiryDateTime = expiryDate.isNotEmpty
+                  ? DateFormat('yyyy-MM-dd').parse(expiryDate)
+                  : DateTime.now();
+              final renewDateTime = renewDate.isNotEmpty
+                  ? DateFormat('yyyy-MM-dd').parse(renewDate)
+                  : DateTime.now();
+
+              // Calculate remaining days
+              int remainingDays =
+                  expiryDateTime.difference(DateTime.now()).inDays;
+              remainingDays = max(
+                  remainingDays, 0); // Ensure remaining days is not negative
+
+              final totalDays =
+                  max(renewDateTime.difference(expiryDateTime).inDays, 1);
+              // // Ensure total days is not zero
+              final remainingPercentage =
+                  remainingDays.toDouble() / totalDays.toDouble();
+
+              return Container(
+                height: height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Circle for remaining days
+                    Padding(
+                      padding: EdgeInsets.only(left: width * 0.6),
+                      child: Container(
+                        height: height * 0.05,
+                        width: width * 0.32,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromARGB(255, 194, 197, 255),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 1),
+                            )
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.only(left: 15),
+                                child: remainingDays > 0
+                                    ? Text('ACTIVE',
+                                        style: GoogleFonts.notoSansKhojki(
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 16))
+                                    : Text(
+                                        'INACTIVE  ',
+                                        style: GoogleFonts.notoSansKhojki(
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black54,
+                                            fontSize: 16),
+                                      )),
+                            Expanded(child: Container()),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: remainingDays > 0
+                                  ? const Icon(
+                                      Icons.circle,
+                                      size: 17,
+                                      color: Colors.green,
+                                    )
+                                  : const Icon(
+                                      Icons.circle,
+                                      size: 17,
+                                      color: Colors.red,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Stack(
+                      children: [
+                        Container(
+                          height: height * 0.42,
+                          width: width * 0.75,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFFFFF),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color.fromARGB(255, 146, 146, 146)
+                                    .withOpacity(0.2),
+                                spreadRadius: 2,
+                                blurRadius: 5,
+                                offset: const Offset(0, 1.5),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                          left: width * 0.045,
+                          top: height * 0.022,
+                          child: SizedBox(
+                            height: height * 0.38,
+                            width: width * 0.65,
+                            child: Stack(
+                              children: [
+                                // Outer white circle with shadow
+
+                                Container(
+                                  height: height * 0.38,
+                                  width: width * 0.7,
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.white,
+                                        spreadRadius: 2,
+                                        blurRadius: 5,
+                                        offset: Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // Purple countdown line
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  right: 0,
+                                  bottom: 0,
+                                  child: CustomPaint(
+                                    size: Size(height * 0.33, width * 0.6),
+                                    painter: CirclePainter(remainingPercentage),
+                                  ),
+                                ),
+                                // Text for remaining days
+                                Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text('REMAINING',
+                                          style: GoogleFonts.lato(
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                Color.fromARGB(135, 75, 75, 75),
+                                          )),
+                                      const SizedBox(
+                                        height: 8.5,
+                                      ),
+                                      Text('$remainingDays',
+                                          style: GoogleFonts.notoSansKhojki(
+                                              fontSize: 61,
+                                              fontWeight: FontWeight.bold,
+                                              color: const Color.fromARGB(
+                                                  255, 74, 81, 211))),
+                                      const SizedBox(
+                                        height: 5.5,
+                                      ),
+                                      Text('Days',
+                                          style: GoogleFonts.notoSansKhojki(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w600,
+                                            color:
+                                                Color.fromARGB(136, 50, 50, 50),
+                                          ))
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: height * 0.02),
+                    Text(
+                        expiryDate == ''
+                            ? '$renewDate - 2024-03-08'
+                            : '$renewDate - $expiryDate',
+                        style: GoogleFonts.openSans(
+                            color: Colors.black54, fontSize: 15)),
+
+                    SizedBox(height: height * 0.025),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20, right: 20),
+                      child: Container(
+                        height: height * 0.085,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color.fromARGB(255, 146, 146, 146)
+                                  .withOpacity(0.2),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 1.5),
+                            ),
+                          ],
+                        ),
+                        padding: const EdgeInsets.only(left: 15, right: 20),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.arrow_left_sharp,
+                              color: AppColors.backgroundColor,
+                              size: 32.5,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              packageName,
+                              style: GoogleFonts.notoSansKhojki(
+                                color: Color.fromARGB(255, 59, 59, 59),
+                                fontSize: 18,
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                            Container(
+                              height: height * 0.05,
+                              width: width * 0.15,
+                              decoration: BoxDecoration(
+                                color: AppColors.backgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  amount,
+                                  style: GoogleFonts.notoSansKhojki(
+                                    fontSize: 16.5,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
+}
+
+class CirclePainter extends CustomPainter {
+  final double remainingPercentage;
+
+  CirclePainter(this.remainingPercentage);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final Paint paint = Paint()
+      ..color = AppColors.blackColor
+      ..strokeWidth = 5.0
+      ..style = PaintingStyle.stroke;
+
+    final double radius = size.width * 0.50;
+    final double centerX = size.width * 0.50;
+    final double centerY = size.height * 0.50;
+
+    const double startAngle = -pi / 2;
+    final double sweepAngle = 2 * pi * remainingPercentage;
+
+    canvas.drawArc(
+      Rect.fromCircle(center: Offset(centerX, centerY), radius: radius),
+      startAngle,
+      sweepAngle,
+      false,
+      paint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
+
+
+
+import 'dart:convert';
+import 'dart:io';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:gowiide_broadband_app/screens/login_screen1.dart';
+import 'package:gowiide_broadband_app/services/push_notifications.dart';
+
+
+
+void main() async {
+  // Ensure that Firebase is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  Platform.isAndroid
+      ? await Firebase.initializeApp(
+          options: const FirebaseOptions(
+              apiKey: 'AIzaSyDN4eEXl_PyZtxUMTGc-b5J6fmYlrl_7qk',
+              appId: '1:382828921459:android:2c684422da1d0d561fe006',
+              messagingSenderId: '382828921459',
+              projectId: 'gowideuser',
+              storageBucket: 'gowideuser.appspot.com'))
+      : await Firebase.initializeApp();
+
+ 
+  
+  runApp(const MyApp());
+
+  // Run the app
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'Gowide',
+        debugShowCheckedModeBanner: false,
+        home: LoginScreen1());
+  }
+}

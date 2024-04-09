@@ -1,0 +1,519 @@
+API Details
+Login
+URL: https://www.gowidenet.in/admin/api/file/CustomerLogin.php
+JSON Body: {
+    "userid":"",
+    "password":""
+}
+Response: {
+    "status": "OK",
+    "userId": "E115_Sandhya"
+}
+
+Check Plan Status
+GET - https://www.gowidenet.in/admin/api/file/CheckPlanStatus.php
+Param: userID
+Response: {
+    "packageName": "",
+    "amount": "",
+    "expiryDate": ""
+}
+
+Subject List
+URL: https://www.gowidenet.in/admin/api/SubjectList.php
+Response: {
+    "records": [
+        "No internet",
+        "Red indication in router (stable)",
+        "Red indication in router (blinking)",
+        "Cable cut",
+        "Speed issue",
+        "WAN port indicator not working",
+        "Router issue",
+        "I want to change my device(PC, Router)"
+    ]
+}
+
+Register Complaint
+URL: https://www.gowidenet.in/admin\api\complaint/RegisterComplaint.php
+JSON Body: {
+    "userID":"",
+    "subject":"",
+    "message":""
+}
+Response: {
+    "status": "OK",
+    "message": "Your complaint, GW-2021-04-24-3, has been registered with us. One of our executive will contact you shortly."
+}
+
+If inputs are not proper, then-
+Response: {
+    "status": "EMPTY",
+    "message": "Error in receiving data."
+}
+
+User Complaints List
+GET - https://www.gowidenet.in/admin/api/complaint/UserComplaintList.php
+Param: userID
+Response: {
+    "records": [
+        {
+            "complaintNo": "GW-2021-04-24-2",
+            "complaintSubject": "Red indication in router (stable)",
+            "complaintOpenTime": "2021-04-23 20:09:03",
+            "engineerName": null,
+            "complaintStatus": "Pending"
+        },
+        {
+            "complaintNo": "GW-2021-04-24-1",
+            "complaintSubject": "Cable cut",
+            "complaintOpenTime": "2021-04-23 20:07:09",
+            "engineerName": "Bharat Rawat",
+            "complaintStatus": "Pending"
+        }
+    ]
+}
+
+Payment History
+GET - https://www.gowidenet.in/admin/api/file/PaymentHistory.php
+Param: userID
+Response: {
+    "records": [
+        {
+            "renewDate": "01-04-21 11:04",
+            "packageName": "25Mbps_Ultd_H",
+            "amount": "589",
+            "expiryDate": "01-05-21 23:05"
+        }
+    ]
+}
+
+Plans List
+URL: https://www.gowidenet.in/admin/api/PlanList.php
+Response: {
+    "records": [
+        {
+            "planName": "10MBps Unlimited 30 Days",
+            "description": "Pay for 120 Days +60 Days FREE\\nPay for 240 Days +125 Days FREE",
+            "amount": "471₹"
+        },
+        {
+            "planName": "25MBps Unlimited 30 Days",
+            "description": "Pay for 120 Days +60 Days FREE\\nPay for 240 Days +125 Days FREE",
+            "amount": "589₹"
+        },
+        {
+            "planName": "50MBps Unlimited 30 Days",
+            "description": "Pay for 120 Days +60 Days FREE\\nPay for 240 Days +125 Days FREE",
+            "amount": "648₹"
+        },
+        {
+            "planName": "100MBps Unlimited 30 Days",
+            "description": "Pay for 120 Days +60 Days FREE\\nPay for 240 Days +125 Days FREE",
+            "amount": "1179₹"
+        }
+    ]
+}
+
+
+------------------------------------------------------------------------------------------------------
+
+Engineer App APIs
+Login
+URL: https://www.gowidenet.in/admin/api/login/Engineer.php
+JSON Body: {
+    "engineerID":"amol",
+    "password":"amol"
+}
+Response: {
+    "status": "OK",
+    "eID": "1",
+    "engineerID": "amol",
+    "engineerName": "Amol Katkar"
+}
+
+Assign Complaint
+URL: https://www.gowidenet.in/admin/api/complaint/AssignComplaint.php
+JSON Body: {
+    "complaintID":169,
+    "engineerID":1
+}
+Response: {
+    "status": "OK",
+    "message": "Complaint has been assigned successfully."
+}
+
+If inputs are not proper, then-
+Response: {
+    "status": "EMPTY",
+    "message": "Error in receiving data."
+}
+
+Resolve Complaint
+GET - https://www.gowidenet.in/admin/api/complaint/ResolveComplaint.php
+Params: complaintID, subject, remarks
+Response: {
+    "status": "OK",
+    "message": "Complaint has been closed successfully."
+}
+
+Engineer Assigned Complaints
+GET - https://www.gowidenet.in/admin/api/complaint/AssignedComplaints.php
+Param: engineerID
+Response: {
+    "records": [
+        {
+            "complaintID": "190",
+            "complaintNo": "GW-2021-04-25-15",
+            "complaintSubject": "Red indication in router (blinking)",
+            "complaintOpenTime": "2021-04-25 10:19:56",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Resolved"
+        },
+        {
+            "complaintID": "186",
+            "complaintNo": "GW-2021-04-25-11",
+            "complaintSubject": "Speed issue",
+            "complaintOpenTime": "2021-04-25 04:16:30",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Pending"
+        },
+        {
+            "complaintID": "183",
+            "complaintNo": "GW-2021-04-25-8",
+            "complaintSubject": "Red indication in router (stable)",
+            "complaintOpenTime": "2021-04-24 21:02:59",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Pending"
+        }
+   ]
+}
+
+Pending Complaints List
+URL: https://www.gowidenet.in/admin/api/complaint/PendingComplaints.php
+Response: {
+    "records": [
+        {
+            "complaintID": "188",
+            "complaintNo": "GW-2021-04-25-13",
+            "complaintSubject": "Speed issue",
+            "complaintOpenTime": "2021-04-25 04:33:02",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Pending"
+        },
+        {
+            "complaintID": "187",
+            "complaintNo": "GW-2021-04-25-12",
+            "complaintSubject": "Router issue",
+            "complaintOpenTime": "2021-04-25 04:26:04",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Pending"
+        },
+        {
+            "complaintID": "186",
+            "complaintNo": "GW-2021-04-25-11",
+            "complaintSubject": "Speed issue",
+            "complaintOpenTime": "2021-04-25 04:16:30",
+            "customerID": "15_Bharat",
+            "complaintStatus": "Pending"
+        }
+   ]
+}
+
+
+
+
+
+
+
+
+Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(children: [
+            SizedBox(height: MediaQuery.of(context).size.height * 0.10),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.275,
+              width: MediaQuery.of(context).size.width * 0.58,
+              child: Image(image: AssetImage('assets/images/app-logo.jpg')),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30),
+              child: Column(children: [
+                Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                            color: Color.fromRGBO(143, 148, 251, 1),
+                            blurRadius: 20,
+                            offset: Offset(0, 10)),
+                      ]),
+                  child: Column(children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.grey.shade100))),
+                      child: TextField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Email',
+                              hintStyle:
+                                  TextStyle(color: Colors.grey.shade400))),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          border: Border(
+                              bottom: BorderSide(color: Colors.grey.shade100))),
+                      child: TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Password',
+                              hintStyle:
+                                  TextStyle(color: Colors.grey.shade400))),
+                    ),
+                  ]),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                InkWell(
+                  onTap: _login,
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: const LinearGradient(colors: [
+                          Color.fromRGBO(143, 148, 251, 1),
+                          Color.fromRGBO(143, 148, 251, 0.6)
+                        ])),
+                    child: const Center(
+                        child: Text(
+                      'Login',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 16),
+                    )),
+                  ),
+                ),
+              ]),
+            )
+          ]),
+        ),
+
+
+
+
+        import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:gowiide_broadband_app/app_colors.dart';
+import 'package:gowiide_broadband_app/services/resources_respository.dart';
+
+class ComplaintSelectionDialog extends StatefulWidget {
+  final String userId;
+
+  const ComplaintSelectionDialog({
+    Key? key,
+    required this.userId,
+  }) : super(key: key);
+
+  @override
+  _ComplaintSelectionDialogState createState() =>
+      _ComplaintSelectionDialogState();
+}
+
+class _ComplaintSelectionDialogState extends State<ComplaintSelectionDialog> {
+  String? selectedSubject;
+  final TextEditingController _messageController = TextEditingController();
+
+ 
+  void _submitComplaint() async {
+    if (_messageController.text.isNotEmpty && selectedSubject != null) {
+      try {
+        final response = await ApiRepository().registerComplaint(
+            widget.userId, selectedSubject!, _messageController.text);
+        // Show feedback to the user based on the response
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(response['status'] == 'OK' ? 'Success' : 'Error'),
+            content: Text(response['message']),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+        // Clear the message controller after submission
+        _messageController.clear();
+        Navigator.of(context).pop();
+      } catch (e) {
+        // Handle error
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to submit complaint: $e'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    } else {
+      // Show an error if message or subject is not selected
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text('Please enter a message and select a subject.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+   @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return BottomSheet(
+      onClosing: () {}, // Add your closing logic here if needed
+
+      builder: (context) {
+        return SingleChildScrollView(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            height: 500, // Adjust height to your preference
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Select Reason',
+                  style: GoogleFonts.lato(
+                    fontSize: 20,
+                    color: const Color.fromARGB(255, 36, 36, 36),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                FutureBuilder<List<String>>(
+                  future: ApiRepository().getComplaintSubjects(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator(
+                        strokeWidth: 1,
+                        color: Colors.black,
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      List<String> subjects = snapshot.data ?? [];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Text(
+                                    selectedSubject ?? 'No internet',
+                                    style: GoogleFonts.openSans(
+                                      fontSize: 18,
+                                      color: Color.fromARGB(255, 31, 31, 31),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              PopupMenuButton<String>(
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 29,
+                                  color: AppColors.backgroundColor,
+                                ),
+                                itemBuilder: (context) {
+                                  return subjects.map((String subject) {
+                                    return PopupMenuItem<String>(
+                                      value: subject,
+                                      child: Text(
+                                        subject,
+                                        style: GoogleFonts.openSans(
+                                          fontSize: 18,
+                                          color:
+                                              Color.fromARGB(255, 31, 31, 31),
+                                        ),
+                                      ),
+                                    );
+                                  }).toList();
+                                },
+                                onSelected: (String value) {
+                                  setState(() {
+                                    selectedSubject = value;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          TextField(
+                            controller: _messageController,
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 3, horizontal: 10),
+                              hintText: 'Write your message',
+                              hintStyle: GoogleFonts.openSans(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(
+                                    15), // Adjust the radius as needed
+                                borderSide: BorderSide(
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 30),
+                          cr
+                              ),
+                            ],
+                          )
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

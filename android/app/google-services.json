@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "382828921459",
+    "project_id": "gowideuser",
+    "storage_bucket": "gowideuser.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382828921459:android:1fc7d0ac569295cb1fe006",
+        "android_client_info": {
+          "package_name": "com.app.gowidenet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382828921459-i4f87cbh279hq2oegf5hfg5s6nqr0l3v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN4eEXl_PyZtxUMTGc-b5J6fmYlrl_7qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382828921459-i4f87cbh279hq2oegf5hfg5s6nqr0l3v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382828921459:android:2c684422da1d0d561fe006",
+        "android_client_info": {
+          "package_name": "com.example.gowiide_broadband_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "382828921459-i4f87cbh279hq2oegf5hfg5s6nqr0l3v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDN4eEXl_PyZtxUMTGc-b5J6fmYlrl_7qk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "382828921459-i4f87cbh279hq2oegf5hfg5s6nqr0l3v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
