@@ -1,8 +1,5 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gowiide_broadband_app/app_colors.dart';
 import 'package:gowiide_broadband_app/services/notification_services.dart';
@@ -16,13 +13,14 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.userId}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   late Future<List<Map<String, dynamic>>> _paymentHistory;
   NotificationServices notificationServices = NotificationServices();
-
+  // final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   @override
   void initState() {
     super.initState();
@@ -63,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         if (expiryDate.isNotEmpty) {
           final expiryDateTime = DateTime.parse(expiryDate);
           final remainingDays =
-              expiryDateTime.difference(DateTime.now()).inDays;
+              expiryDateTime.difference(DateTime.now()).inDays + 1;
 
           if (remainingDays <= 4 && remainingDays >= 0) {
             _showRechargeDialog();

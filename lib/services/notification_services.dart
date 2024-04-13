@@ -101,6 +101,7 @@ class NotificationServices {
   void handleMesssage(BuildContext context, RemoteMessage message) {
     print('In handleMesssage function');
     if (message.data['type'] == 'text') {
+      Navigator.pushNamed(context, '/complaint');
       // redirect to new screen or take different action based on payload that you receive.
     }
   }

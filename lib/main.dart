@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gowiide_broadband_app/screens/bottom_navigation/bottom_navigation_screen.dart';
+import 'package:gowiide_broadband_app/screens/complaints_screen.dart';
 import 'package:gowiide_broadband_app/screens/login_screen1.dart';
+import 'package:gowiide_broadband_app/services/firebase_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -20,8 +22,9 @@ void main() async {
           ),
         )
       : await Firebase.initializeApp();
-  final String? userId = await getUserIdFromSharedPreferences();
 
+  final String? userId = await getUserIdFromSharedPreferences();
+  await FirebaseApi().initNotifications();
   runApp(MyApp(userId: userId));
 }
 
@@ -43,9 +46,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: userId != null
-          ? BottomNavigationScreen(userId: userId.toString())
-          : const LoginScreen1(),
+      routes: {
+        '/': (context) => userId != null
+            ? BottomNavigationScreen(userId: userId.toString())
+            : const LoginScreen1(),
+        '/complaint': (context) => ComplaintsScreen(
+            userId: userId.toString()), // Define route for complaint screen
+      },
+      initialRoute: '/', // Set the initial route
     );
   }
 }
