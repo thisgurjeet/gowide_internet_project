@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gowiide_broadband_app/screens/bottom_navigation/bottom_navigation_screen.dart';
 import 'package:gowiide_broadband_app/screens/complaints_screen.dart';
 import 'package:gowiide_broadband_app/screens/login_screen1.dart';
-import 'package:gowiide_broadband_app/services/firebase_api.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
@@ -24,7 +24,7 @@ void main() async {
       : await Firebase.initializeApp();
 
   final String? userId = await getUserIdFromSharedPreferences();
-  await FirebaseApi().initNotifications();
+
   runApp(MyApp(userId: userId));
 }
 

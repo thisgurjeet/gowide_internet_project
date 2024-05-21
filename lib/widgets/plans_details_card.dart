@@ -6,6 +6,7 @@ class PlanDetailsCard extends StatelessWidget {
   final String planName;
   final String amount;
   final String description;
+
   const PlanDetailsCard({
     Key? key,
     required this.planName,
@@ -16,10 +17,9 @@ class PlanDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
+    final width = screenSize.width;
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.12,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -32,10 +32,7 @@ class PlanDetailsCard extends StatelessWidget {
           ),
         ],
       ),
-      padding: const EdgeInsets.only(
-        left: 10,
-        right: 10,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
       child: Row(
         children: [
           Icon(
@@ -44,52 +41,54 @@ class PlanDetailsCard extends StatelessWidget {
             size: screenSize.width * 0.075,
           ),
           SizedBox(width: width * 0.035),
-          Container(
-            width: width * 0.5,
+          Expanded(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   planName,
                   style: GoogleFonts.workSans(
-                      color: const Color.fromARGB(255, 121, 121, 121),
-                      fontSize: screenSize.width * 0.044,
-                      fontWeight: FontWeight.w600),
+                    color: const Color.fromARGB(255, 121, 121, 121),
+                    fontSize: screenSize.width * 0.044,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-                const SizedBox(
-                  height: 4,
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  maxLines: null, // Allow unlimited lines
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                  style: GoogleFonts.workSans(
+                    fontWeight: FontWeight.w500,
+                    color: const Color.fromARGB(137, 30, 30, 30),
+                    fontSize: screenSize.width * 0.038,
+                  ),
                 ),
-                Flexible(
-                  child: Text(description,
-                      maxLines: 2,
-                      softWrap: true, // Allow text to wrap
-                      overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.workSans(
-                          fontWeight: FontWeight.w500,
-                          color: const Color.fromARGB(137, 30, 30, 30),
-                          fontSize: screenSize.width * 0.038)),
-                )
               ],
             ),
           ),
-          Expanded(child: Container()),
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.05,
+          ),
           Container(
-            height: height * 0.06,
-            padding: const EdgeInsets.only(left: 10, right: 10),
+            height: MediaQuery.of(context).size.height * 0.06,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
               color: AppColors.backgroundColor,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Center(
-              child: Text(amount,
-                  style: GoogleFonts.openSans(
-                    fontSize: screenSize.width * 0.042,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  )),
+              child: Text(
+                amount,
+                style: GoogleFonts.openSans(
+                  fontSize: screenSize.width * 0.042,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

@@ -87,7 +87,7 @@ class NotificationsCard extends StatelessWidget {
                 children: [
                   Text(title,
                       style: GoogleFonts.workSans(
-                        color: const Color.fromARGB(255, 63, 63, 63),
+                        color: const Color.fromARGB(255, 121, 121, 121),
                         fontSize: screenSize.width * 0.042,
                         fontWeight: FontWeight.w500,
                       )),

@@ -372,7 +372,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               packageName,
                               style: GoogleFonts.workSans(
-                                color: const Color.fromARGB(255, 115, 115, 115),
+                                color: const Color.fromARGB(255, 135, 135, 135),
                                 fontWeight: FontWeight.w600,
                                 fontSize: screenSize.width * 0.046,
                               ),

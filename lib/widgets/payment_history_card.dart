@@ -110,7 +110,7 @@ class PaymentHistoryCard extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 10), // Added SizedBox for spacing
+          const SizedBox(width: 10), // Added SizedBox for spacing
           Container(
             height: screenSize.height * 0.06,
             padding: const EdgeInsets.symmetric(horizontal: 10),

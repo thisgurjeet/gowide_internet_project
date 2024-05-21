@@ -59,7 +59,7 @@ class ComplaintCard extends StatelessWidget {
                     complaintOpenTime,
                     style: GoogleFonts.workSans(
                         fontWeight: FontWeight.w600,
-                        color: const Color.fromARGB(137, 30, 30, 30),
+                        color: const Color.fromARGB(255, 140, 140, 140),
                         fontSize: screenSize.width * 0.041),
                   ),
                   Container(
@@ -71,11 +71,16 @@ class ComplaintCard extends StatelessWidget {
                           fontSize: screenSize.width * 0.041),
                     ),
                   ),
-                  Text(
-                    engineerName,
-                    style: GoogleFonts.openSans(
-                        color: Colors.black54, fontSize: 16),
-                  )
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.005),
+                  engineerName != ""
+                      ? Text(
+                          '$engineerName 👨🏼‍🔧',
+                          style: GoogleFonts.workSans(
+                              fontWeight: FontWeight.w600,
+                              color: const Color.fromARGB(255, 140, 140, 140),
+                              fontSize: screenSize.width * 0.041),
+                        )
+                      : Container()
                 ],
               ),
             ),
